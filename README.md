@@ -5,4 +5,4 @@
 - Noval Sofyan Ramadhan 192410101117
 - Mustika Binar Bestari 192410101131
 
-- Website yang kami buat adalah website tentang donasi tumbuhan yang kami beri nama Greeny
+- Website yang kami buat adalah website tentang donasi untuk menanam bibit pohon yang kami beri nama Greeny
