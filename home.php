@@ -1,3 +1,14 @@
+<?php
+session_start();
+
+if ( !isset($_SESSION["login"])) {
+    header("Location: index.php");
+    exit;
+}
+
+require("dbDataDonate.php")
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -24,7 +35,7 @@
             <a class="nav-link active" href="#about">About</a>
             <a class="nav-link active" href="#donation">Donation</a>
             <a class="nav-link active" href="#contact">Contact</a>
-            <a class="nav-link active" href="index.php"><img src="img/logout.png">Logout</a>
+            <a class="nav-link active" href="logout.php"><img src="img/logout.png">Logout</a>
           </div>
         </div>
       </div>
@@ -34,7 +45,25 @@
     <!-- Jumbotron -->
     <section class="jumbotron text-center" style="background-color: rgb(197, 245, 229); padding-top: 2rem;">
         <img src="img/bg.jpg" alt="Tree" width="250" class="rounded-circle img-thumbnail mt-5" />
-        <p class="display-6">Hello, Greeniers!</hp>
+        <?php
+
+        require("dbUsers.php");
+        $token = $_COOKIE['token'];
+        $result = $db->readUser();
+
+        if ($result->num_rows > 0) {
+          // output data of each row
+          while($row = $result->fetch_assoc()) {
+            $target = $row["email"];
+            $hased = hash('sha256', $target);
+            if($token === $hased) {
+              $user = $target;
+              break;
+            }
+          }
+        }
+        ?>
+        <p class="display-6">Hello, <?php echo "$user" ?></hp>
         <p class="lead">Let's plant one million trees for Indonesia!</p>
         <hr class="my-4" />
             
@@ -43,10 +72,13 @@
                 <thead> My History Donation </thead>
                     <tbody>
                         <tr>
-                            <td>No</td>
-                            <td>Donation Amount</td>
-                            <td>Payment Method</td>
-                          </tr>
+                          <th>ID Transaksi</th>
+                          <th>Donation Amount</th>
+                          <th>Payment Method</th>
+                        </tr>
+                        <?php
+                        $dbData->readDonate();
+                        ?>
                     </tbody>
             </table>
         </div>

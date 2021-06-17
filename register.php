@@ -1,3 +1,42 @@
+<?php
+
+require("dbUsers.php");
+//cek cookie
+if(isset($_COOKIE['token'])) {
+  $token = $_COOKIE['token'];
+  $result = $db->readUser();
+  
+  if ($result->num_rows > 0) {
+    // output data of each row
+    while($row = $result->fetch_assoc()) {
+      $target = hash('sha256', $row["email"]);
+      if($token === $target) {
+        $_SESSION['login'] = true;
+        break;
+      } else {
+        $_SESSION['login'] = false;
+      }
+    }
+  }
+}
+
+if (isset($_SESSION["login"])) {
+  header("Location: home.php");
+  exit;
+}
+
+if(isset($_POST["daftar"])) {
+
+  $email = $_POST["email"];
+  $passwd = $_POST["passwd"];
+  
+  $db->daftarUser($email, $passwd);
+
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -21,9 +60,9 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav ms-auto">
             <a class="nav-link active" aria-current="page" href="index.php">Home</a>
-            <a class="nav-link active" href="#about">About</a>
-            <a class="nav-link active" href="#donation">Donation</a>
-            <a class="nav-link active" href="#adress">Adress</a>
+            <a class="nav-link active" href="index.php#about">About</a>
+            <a class="nav-link active" href="index.php#donation">Donation</a>
+            <a class="nav-link active" href="index.php#contact">Contact</a>
           </div>
         </div>
       </div>
@@ -31,23 +70,23 @@
     <!-- Akhir Navigasi -->
 
     <!-- Formulir -->
-    <div class="container-md">
+    <div class="container-md d-flex justify-content-center">
       <div align="center">
-        <form class="mt-5">
+        <form class="mt-5" action="" method="post">
           <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Your Email</label>
-            <input type="email" class="form-control-sm" id="exampleInputEmail1" aria-describedby="emailHelp" />
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            <label for="exampleInputEmail1" class="form-label">Email</label>
+            <input type="email" class="form-control-sm" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" />
+            <div id="emailHelp" class="form-text">Kami tidak akan menyebarkan informasi email anda kemanapun.</div>
           </div>
           <div class="mb-3">
             <label for="exampleInputPassword1" class="form-label">Password</label>
-            <input type="password" class="form-control-sm" id="exampleInputPassword1" />
+            <input type="password" class="form-control-sm" id="exampleInputPassword1" name="passwd" />
           </div>
-          <button type="submit" name="login" class="btn btn-warning">Register</button>
+          <button type="submit" name="daftar" class="btn btn-warning">Daftar</button>
         </form>
 
         <p class="mt-3">Or</p>
-        <a class="btn btn-outline-warning" href="login.php" role="button">Already Have Account</a>
+        <a class="btn btn-outline-warning" href="login.php" role="button">Sudah Punya Akun?</a>
       </div>
     </div>
     <!-- Akhir Formulir -->

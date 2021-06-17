@@ -1,3 +1,31 @@
+<?php
+session_start();
+require("dbUsers.php");
+//cek cookie
+if(isset($_COOKIE['token'])) {
+  $token = $_COOKIE['token'];
+  $result = $db->readUser();
+
+  if ($result->num_rows > 0) {
+    // output data of each row
+    while($row = $result->fetch_assoc()) {
+      $target = hash('sha256', $row["email"]);
+      if($token === $target) {
+        $_SESSION['login'] = true;
+        break;
+      } else {
+        $_SESSION['login'] = false;
+      }
+    }
+  }
+}
+
+if (isset($_SESSION["login"])) {
+  header("Location: home.php");
+  exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -99,7 +127,7 @@
           <p class="fs-5">Make planting and environmental actions easy, safe and transparent.
             Start Planting Your Tree.</p>
           <p class="fs-5">Donate Without Minimum!</p>
-          <a class="btn btn-warning" role="button">Donate Now</a>
+          <a class="btn btn-warning" href="login.php" role="button">Donate Now</a>
         </div>
         </div>
       </div>
