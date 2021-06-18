@@ -62,7 +62,7 @@ class usersDB {
         if(isset($_COOKIE['token'])) {
             $token = $_COOKIE['token'];
             
-            $sql = "SELECT eamil FROM user_tabele WHERE id = $email";
+            $sql = "SELECT email FROM user_tabele WHERE id = $email";
             $result = $this->conn->query($sql);
 
             $row = $result->fetch_assoc();
